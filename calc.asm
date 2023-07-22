@@ -25,12 +25,11 @@ _start:
     mov     edx, 4          ; read 4 bytes
     int     0x80
 
+    mov     eax, ecx        ; parameter is string address
     call _getFactor         ; gets factor for num of digits dynamically
 
     ; Convert to a number
     toInt:
-    call    _updateFactor   ; update factor 
-    je      quit 
     mov     ebx, eax        ; assign factor to ebx 
 
     movzx   eax, byte [ecx] ; move first byte to eax
@@ -45,6 +44,8 @@ _start:
 
     mov     [val], ebx
     pop     eax             ; pop factor saved in stack
+    call    _updateFactor   ; update factor 
+    jz      quit
     jmp     toInt 
 
     quit:
@@ -89,8 +90,3 @@ _getFactor:
     pop     ecx
     pop     ebx
     ret
-
-
-
-
-
