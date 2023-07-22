@@ -26,10 +26,22 @@ _start:
     int     0x80
 
     mov     eax, ecx        ; parameter is string address
-    call _getFactor         ; gets factor for num of digits dynamically
+    call _toInt
 
-    ; Convert to a number
-    toInt:
+    quit:
+    ; Quit
+    mov     eax, 1
+    mov     ebx, 0
+    int     0x80
+
+; toInt(factor (eax), string * (ecx))
+; returns int of string
+_toInt:
+    push    ebx
+    push    ecx
+
+    call _getFactor         ; gets factor for num of digits dynamically
+    nextChar1:
     mov     ebx, eax        ; assign factor to ebx 
 
     movzx   eax, byte [ecx] ; move first byte to eax
@@ -45,15 +57,17 @@ _start:
     mov     [val], ebx
     pop     eax             ; pop factor saved in stack
     call    _updateFactor   ; update factor 
-    jz      quit
-    jmp     toInt 
+    jz      exitToInt 
+    jmp     nextChar1
 
-    quit:
-    ; Quit
-    mov     eax, 1
-    mov     ebx, 0
-    int     0x80
+    exitToInt:
+    pop     ecx
+    pop     ebx
+    ret
 
+; updateFactor(factor (eax))
+; gets current factor and divides by 10
+; sets zero flag if zero
 _updateFactor:
     push    ebx
     push    edx
@@ -67,16 +81,18 @@ _updateFactor:
     pop     ebx
     ret
 
+; getFactor(string* num (eax))
+; returns an inital factor by getting length
 _getFactor:
     push    ebx
     push    ecx
     mov     ebx, eax        ; Create a reference point
 
-    nextChar:
+    nextChar2:
     cmp     byte [eax], 0xa
     je      done 
     inc     eax
-    jmp     nextChar
+    jmp     nextChar2
     done:
     sub     eax, ebx
     mov     ecx, eax
