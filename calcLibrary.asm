@@ -70,3 +70,21 @@ _getFactor:
     pop     ecx
     pop     ebx
     ret
+
+; getLength(string* num (eax))
+; returns length of string
+_getLength:
+    push    ebx
+    mov     ebx, eax        ; Create reference point
+
+    lengthLoop:
+    cmp     byte [eax], 0x0
+    jz      lengthLoopEnd
+    inc     eax
+    jmp     lengthLoop
+
+    lengthLoopEnd:
+    sub     eax, ebx
+
+    pop     ebx
+    ret
