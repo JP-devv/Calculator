@@ -54,19 +54,16 @@ _getStringLength:
   pop   ebx
   ret
 
-; readString(ecx: string*)
+; readString(ecx: string*, edx: bytes to read)
 ; reads user input and places it in ecx memory
 _readString:
   push  ebx
   push  eax
-  push  edx
 
   mov   eax, 3
   mov   ebx, 0
-  mov   edx, 1
   int   0x80
 
-  pop   edx
   pop   eax
   pop   ebx
   ret
