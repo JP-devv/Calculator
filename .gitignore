@@ -1,2 +1,6 @@
 a.out
 calc.o
+test
+test.o
+calc
+calc.o
