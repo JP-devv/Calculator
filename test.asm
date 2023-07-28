@@ -3,18 +3,19 @@
 section .data
 msg db  "Enter a single character:", 0x0
 
-section .r
+section .bss
+
+input:  resb  1
 
 section .text
 global _start
 
 _start:
   mov   ecx, msg
-  call  _printf
-  
-  call  _exit
+  call  _printString
 
-; readString(ecx: string*)
-; reads user input and places it in ecx memory
-_readString:
-  
+  mov   ecx, input 
+  call  _readString
+  call  _printString
+
+  call  _exit

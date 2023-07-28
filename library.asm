@@ -1,6 +1,6 @@
-; printf(ecx: string*)
+; printString(ecx: string*)
 ; prints string and also adds new line
-_printf:
+_printString:
   push  ebx
   push  ecx
   push  edx
@@ -10,6 +10,8 @@ _printf:
   call  _getStringLength
   int   0x80
 
+  mov   eax, 4
+  mov   ebx, 1
   mov   ecx, 0xa
   push  ecx
   mov   ecx, esp
@@ -48,6 +50,23 @@ _getStringLength:
   mov   edx, ecx
 
   pop   ecx
+  pop   eax
+  pop   ebx
+  ret
+
+; readString(ecx: string*)
+; reads user input and places it in ecx memory
+_readString:
+  push  ebx
+  push  eax
+  push  edx
+
+  mov   eax, 3
+  mov   ebx, 0
+  mov   edx, 1
+  int   0x80
+
+  pop   edx
   pop   eax
   pop   ebx
   ret
