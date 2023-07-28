@@ -64,6 +64,94 @@ _readString:
   mov   ebx, 0
   int   0x80
 
+  ; Get rid of '\n'
+  push  ecx
+  readScan:
+  cmp   byte [ecx], 0xa
+  je    removelf
+  inc   ecx
+  jmp   readScan
+  removelf:
+  mov   ebx, 0x0
+  mov   byte [ecx], bl
+  pop   ecx
+
+  pop   eax
+  pop   ebx
+  ret
+
+; toInt(ecx: String*)
+; returns numeric value to eax
+_toInt:
+  push  ebx
+
+  xor   ebx, ebx
+  nextNum:
+  xor   eax, eax
+  mov   al, byte [ecx]
+  cmp   al, 0x0
+  je    nextNumEnd
+  inc   ecx
+  sub   al, 0x30
+  imul  ebx, 10
+  add   ebx, eax
+  jmp   nextNum
+
+  nextNumEnd:
+  mov   eax, ebx
+
+  pop   ebx
+  ret
+
+; getNumLength(eax: integer)
+; returns length in ecx
+_getNumLength:
+  push  ebx
+  push  eax
+  push  edx
+
+  xor   ecx, ecx
+  mov   ebx, 10
+  nextNum2:
+  xor   edx, edx
+  cmp   eax, 0x0
+  je    nextNumEnd2
+  div   ebx
+  inc   ecx
+  jmp nextNum2
+  nextNumEnd2:
+
+  pop   edx
+  pop   eax
+  pop   ebx
+  ret
+
+; toString(eax: integer, ecx: string *)
+; returns string * in ecx
+_toString:
+  push  ebx
+  push  eax
+  push  edx
+                      ; eax has int
+  mov   ebx, ecx      ; ebx has str*
+  call  _getNumLength ; ecx has length
+  add   ebx, ecx      ; strings are in little endian, we add length to addr
+
+  nextDigit:
+  xor   edx, edx
+  cmp   eax, 0x0
+  je    nextDigitEnd
+  mov   ecx, 10
+  div   ecx
+  add   edx, 0x30
+  mov   byte [ebx], dl
+  dec   ebx
+  jmp nextDigit
+  nextDigitEnd:
+  inc   ebx
+  mov   ecx, ebx
+
+  pop   edx
   pop   eax
   pop   ebx
   ret
