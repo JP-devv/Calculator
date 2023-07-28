@@ -1,33 +1,20 @@
-%include 'calcLibrary.asm'
+%include 'library.asm'
 
-section .bss
+section .data
+msg db  "Enter a single character:", 0x0
 
-str:    resd    10
+section .r
 
 section .text
 global _start
 
 _start:
-    ; convert to string
-    mov     eax, 125
-    push    eax
+  mov   ecx, msg
+  call  _printf
+  
+  call  _exit
 
-    mov     ecx, str
-    call    _toString
-    
-    ; print string
-    mov     ecx, eax
-    mov     eax, esp 
-    call    _getNumLength
-    mov     edx, eax
-
-    pop     eax
-
-    mov     eax, 4
-    mov     ebx, 1
-    int     0x80
-
-    ; quit
-    mov     eax, 1
-    mov     ebx, 0
-    int     0x80
+; readString(ecx: string*)
+; reads user input and places it in ecx memory
+_readString:
+  
