@@ -2,7 +2,7 @@
 %include 'calcLibrary.asm'
 section .data
     msg     db      'Please enter a number: ', 0x0
-    val     dw      0x0
+    buffer  dw      0x0
 
 
 section .bss
@@ -22,16 +22,12 @@ _start:
     ; Get input
     mov     ebx, 0          ; stdin
     mov     ecx, input      ; address
-    
-    mov     eax, ecx        ; pass string pointer for function
-    call    _getLength      ; get length to know how big our number is
-    dec     eax             ; Remove one character '\n'
-    mov     edx, eax        ; Read dynamic bytes
-
     mov     eax, 3          ; opcode 3 sys_read
+    mov     edx, 10         ; read 10
     int     0x80            ; kernel
 
     mov     eax, ecx        ; parameter is string address
+    mov     edx, buffer 
     call    _toInt          ; converts string to int in eax
 
     quit:

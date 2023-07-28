@@ -12,11 +12,9 @@ _toInt:
     movzx   eax, byte [ecx] ; move first byte to eax
     inc     ecx             ; move on to next byte
 
-    push    edx
     sub     eax, 48         ; convert to number
     mul     ebx             ; factor num
 
-    pop     edx
     push    ebx             ; save factor stored in ebx
     mov     ebx, [edx]
     add     ebx, eax
